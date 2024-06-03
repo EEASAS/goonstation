@@ -3932,7 +3932,7 @@
 /turf/simulated/floor/orangeblack,
 /area/station/mining/staff_room)
 "jH" = (
-/obj/machinery/processor,
+/obj/machinery/portable_reclaimer,
 /turf/simulated/floor/orangeblack,
 /area/station/mining/staff_room)
 "jI" = (
@@ -16651,7 +16651,7 @@
 	pixel_x = 12
 	},
 /obj/machinery/manufacturer/general{
-	free_resource_amt = 1
+	free_resources = list(/obj/item/material_piece/steel = 1, /obj/item/material_piece/copper = 1, /obj/item/material_piece/glass = 1)
 	},
 /turf/simulated/floor/plating,
 /area/research_outpost/indigo_rye)

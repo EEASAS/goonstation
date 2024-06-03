@@ -1,5 +1,5 @@
 /obj/machinery/computer/stockexchange
-	name = "Stock Exchange"
+	name = "stock exchange"
 	icon = 'icons/obj/computer.dmi'
 	icon_state = "QMreq"
 	var/logged_in = null
@@ -156,7 +156,7 @@
 				boutput(user, SPAN_NOTICE("Card authorized."))
 				src.logged_in = ID.registered
 			else
-				boutput(user, SPAN_ALERT("Pin number incorrect."))
+				boutput(user, SPAN_ALERT("PIN incorrect."))
 				src.logged_in = null
 		else
 			boutput(user, SPAN_ALERT("No bank account associated with this ID found."))

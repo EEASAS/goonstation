@@ -195,14 +195,14 @@
 			src.tier = 2
 			src.icon = target.icon
 			src.icon_state = target.icon_state
-			user.visible_message("<span class='notice'>You upgrade your [src.name] with [target]</span>")
+			user.visible_message("<span class='notice'>You upgrade your [src.name] with [target].</span>")
 			qdel(target)
 			return
 		if (istype(target, /obj/item/fishing_rod/master) && src.tier < 3)
 			src.tier = 3
 			src.icon = target.icon
 			src.icon_state = target.icon_state
-			user.visible_message("<span class='notice'>You upgrade your [src.name] with [target]]</span>")
+			user.visible_message("<span class='notice'>You upgrade your [src.name] with [target].</span>")
 			qdel(target)
 			return
 		else
@@ -448,8 +448,10 @@ TYPEINFO(/obj/item/fish_portal)
 	can_hold = list(/obj/item/reagent_containers/food/fish)
 
 TYPEINFO(/obj/item/syndie_fishing_rod)
-	mats = list("MET-3"=15, "WOOD"=5, "POW-2"=5, "CON-2"=5)
-
+	mats = list("metal_superdense" = 15,
+				"wood" = 5,
+				"energy_high" = 5,
+				"conductive_high" = 5)
 /obj/item/syndie_fishing_rod
 	name = "\improper Glaucus fishing rod"
 	desc = "A high grade tactical fishing rod, completely impractical for reeling in bass."

@@ -93,7 +93,6 @@
 	var/nutrition = 100
 	var/losebreath = 0
 	var/intent = null
-	var/shakecamera = 0
 	var/a_intent = "help"
 	var/m_intent = "run"
 	var/lastKnownIP = null
@@ -442,8 +441,10 @@
 	..()
 
 /mob/Login()
-	if (!src.client)
-		stack_trace("mob/Login called without a client for mob [identify_object(src)]. What?")
+	if (isnull(src.client))
+		return
+		// Guests that get deleted, is how
+		// stack_trace("mob/Login called without a client for mob [identify_object(src)]. What?")
 	if(isnull(src.client.tg_layout))
 		src.client.tg_layout = winget( src.client, "menu.tg_layout", "is-checked" ) == "true"
 	src.client.set_layout(src.client.tg_layout)
@@ -1479,6 +1480,10 @@
 	src.remove_dialogs()
 	if (!isliving(src))
 		src.sight = SEE_TURFS | SEE_MOBS | SEE_OBJS | SEE_SELF | SEE_BLACKNESS
+	for (var/obj/ability_button/reset_view/console/ability in src.item_abilities)
+		src.item_abilities -= ability
+	src.need_update_item_abilities = 1
+	src.update_item_abilities()
 
 /mob/proc/show_credits()
 	set name = "Show Credits"
@@ -1508,7 +1513,7 @@
 	. = ..()
 	if(ishuman(AM) && src.lying)
 		var/mob/living/carbon/human/H = AM
-		if(H.a_intent == "harm" && can_act(H, FALSE) && !H.lying && !ON_COOLDOWN(H, "free_kick_on_\ref[src]", 4 SECONDS))
+		if(H.a_intent == "harm" && can_act(H, FALSE) && !H.lying && !ON_COOLDOWN(H, "free_kick_on_\ref[src]", H.trample_cooldown))
 			H.melee_attack_normal(src, 0, 0, DAMAGE_BLUNT)
 
 /mob/proc/update_inhands()
@@ -2417,6 +2422,7 @@
 			if (!((thr.throw_type & THROW_CHAIRFLIP) && ismob(hit)))
 				random_brute_damage(src, min((6 + (thr?.get_throw_travelled() / 5)), (src.health - 5) < 0 ? src.health : (src.health - 5)))
 				if (!src.hasStatus("knockdown"))
+					src.lastgasp()
 					src.changeStatus("knockdown", 2 SECONDS)
 					src.force_laydown_standup()
 		else

@@ -29,7 +29,7 @@ TYPEINFO(/obj/machinery/secscanner)
 
 	New()
 		..()
-		MAKE_SENDER_RADIO_PACKET_COMPONENT("pda", FREQ_PDA)
+		MAKE_SENDER_RADIO_PACKET_COMPONENT(null, "pda", FREQ_PDA)
 
 	Crossed(atom/movable/AM)
 		if(isliving(AM) && !isintangible(AM))
@@ -260,7 +260,7 @@ TYPEINFO(/obj/machinery/secscanner)
 			var/perpname = perp.face_visible() ? perp.real_name : perp.name
 
 			for (var/datum/db_record/R as anything in data_core.security.find_records("name", perpname))
-				if(R["criminal"] == "*Arrest*")
+				if(R["criminal"] == ARREST_STATE_ARREST)
 					threatcount = max(4,threatcount)
 					break
 

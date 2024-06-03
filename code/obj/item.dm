@@ -552,18 +552,22 @@ ABSTRACT_TYPE(/obj/item)
 					msg += " by item ([W]). Last touched by: [key_name(W.fingerprintslast)]"
 				message_admins(msg)
 				logTheThing(LOG_BOMBING, W?.fingerprintslast, msg)
+
+	var/image/I = image('icons/effects/fire.dmi', null, "item_fire", pixel_y = 5) // pixel shift for centering
+	I.alpha = 180
 	if (src.burn_output >= 1000)
-		UpdateOverlays(image('icons/effects/fire.dmi', "2old"),"burn_overlay")
-	else
-		UpdateOverlays(image('icons/effects/fire.dmi', "1old"),"burn_overlay")
+		I.transform = matrix(I.transform, 1.2, 1.2, MATRIX_SCALE)
+	src.UpdateOverlays(I, "item_ignition")
+	src.add_simple_light("item_ignition", list(255, 110, 135, 110))
 
 /obj/item/proc/combust_ended()
 	if(!src.burning)
 		return
+	src.remove_simple_light("item_ignition")
 	STOP_TRACKING_CAT(TR_CAT_BURNING_ITEMS)
 	burning = null
 	firesource = FALSE
-	ClearSpecificOverlays("burn_overlay")
+	ClearSpecificOverlays("item_ignition")
 	name = "[pick("charred","burned","scorched")] [name]"
 
 /obj/item/temperature_expose(datum/gas_mixture/air, temperature, volume)
@@ -938,7 +942,7 @@ ADMIN_INTERACT_PROCS(/obj/item, proc/admin_set_stack_amount)
 				smoke.attach(src)
 				smoke.start()
 		if (prob(7) && !(src.item_function_flags & COLD_BURN))
-			fireflash(src, 0)
+			fireflash(src, 0, chemfire = CHEM_FIRE_RED)
 
 		if (prob(40))
 			if (src.health > 4)
@@ -963,11 +967,7 @@ ADMIN_INTERACT_PROCS(/obj/item, proc/admin_set_stack_amount)
 			return
 	else
 		if (burning_last_process != src.burning)
-			if (src.burn_output >= 1000)
-				src.overlays -= image('icons/effects/fire.dmi', "2old")
-			else
-				src.overlays -= image('icons/effects/fire.dmi', "1old")
-			return
+			ClearSpecificOverlays("item_ignition")
 		STOP_TRACKING_CAT(TR_CAT_BURNING_ITEMS)
 	burning_last_process = src.burning
 
@@ -1192,20 +1192,21 @@ ADMIN_INTERACT_PROCS(/obj/item, proc/admin_set_stack_amount)
 		var/obj/container = src.loc
 		container.vis_contents -= src
 
-	if (src.loc == user)
+	if (ismob(mobloc)) //if the location is a mob, we properly remove the item
 		var/in_pocket = 0
-		if(issilicon(user)) //if it's a borg's shit, stop here
+		if(issilicon(user)) //if it's a borg's shit on yourself, stop here
 			return 0
-		// storage items in hands or worn
+		// storage items in your own hands or worn
 		if (src.storage && ((src in user.equipped_list()) || src.storage.opens_if_worn))
 			src.storage.storage_item_attack_hand(user)
 			return FALSE
-		if (ishuman(user))
-			var/mob/living/carbon/human/H = user
+		// now we check if we can remove the item from the mob-location
+		if (ishuman(mobloc))
+			var/mob/living/carbon/human/H = mobloc
 			if(H.l_store == src || H.r_store == src)
 				in_pocket = 1
-		if (!cant_self_remove || (!cant_drop && (user.l_hand == src || user.r_hand == src)) || in_pocket == 1)
-			user.u_equip(src)
+		if (!cant_self_remove || (!cant_drop && (user.l_hand == mobloc || user.r_hand == mobloc)) || in_pocket == 1)
+			mobloc.u_equip(src)
 		else
 			boutput(user, SPAN_ALERT("You can't remove this item."))
 			return 0
@@ -1733,3 +1734,22 @@ ADMIN_INTERACT_PROCS(/obj/item, proc/admin_set_stack_amount)
 /obj/item/safe_delete()
 	src.force_drop()
 	..()
+
+/obj/item/can_arm_attach()
+	return ..() && !(src.cant_drop || src.two_handed)
+
+/obj/item/proc/update_inhand(hand, hand_offset) // L, R or LR
+	if (!src.inhand_image)
+		src.inhand_image = image(src.inhand_image_icon, "", MOB_INHAND_LAYER)
+
+	var/state = src.item_state ? src.item_state + "-[hand]" : (src.icon_state ? src.icon_state + "-[hand]" : hand)
+	if(!(state in icon_states(src.inhand_image_icon)))
+		state = src.item_state ? src.item_state + "-L" : (src.icon_state ? src.icon_state + "-L" : "L")
+
+	src.inhand_image.icon_state = state
+	if (src.color)
+		src.inhand_image.color = src.color
+	else if (src.inhand_color)
+		src.inhand_image.color = src.inhand_color
+	src.inhand_image.pixel_x = 0
+	src.inhand_image.pixel_y = hand_offset

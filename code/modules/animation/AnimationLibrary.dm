@@ -210,8 +210,11 @@
 	src.sprint_particle = new /obj/particle/attack/sprint //don't use pooling for these particles
 
 /obj/particle/attack
+	var/belongs_to_mob = TRUE
 
 	disposing() //kinda slow but whatever, block that gc ok
+		if (!src.belongs_to_mob)
+			return
 		for (var/mob/M in mobs)
 			if (M.attack_particle == src)
 				M.attack_particle = null
@@ -231,6 +234,9 @@
 		plane = PLANE_OVERLAY_EFFECTS
 		appearance_flags = TILE_BOUND | PIXEL_SCALE
 
+	bot_hit
+		icon = 'icons/mob/mob.dmi'
+		belongs_to_mob = FALSE
 
 
 /mob/var/obj/particle/attack/attack_particle
@@ -496,7 +502,7 @@
 	M.attack_particle.transform.Turn(rand(0,360))
 
 	SPAWN(1 SECOND)
-		M.attack_particle.alpha = 0
+		M.attack_particle?.alpha = 0
 
 proc/fuckup_attack_particle(var/mob/M)
 	SPAWN(0.1 SECONDS)
@@ -1706,7 +1712,7 @@ var/global/icon/scanline_icon = icon('icons/effects/scanning.dmi', "scanline")
 	animate(slide, transform=tr, time=time)
 	if(!had_fullbright && T.fullbright) // eww
 		T.fullbright = 0
-		T.UpdateOverlays(null, "fullbright")
+		T.ClearSpecificOverlays("fullbright")
 		T.RL_Init() // turning off fullbright
 		var/obj/full_light = new/obj/overlay/tile_effect/fake_fullbright(T)
 		full_light.color = T.color
@@ -1732,7 +1738,7 @@ var/global/icon/scanline_icon = icon('icons/effects/scanning.dmi', "scanline")
 		qdel(slide)
 	if(initial(T.fullbright))
 		T.fullbright = 1
-		T.UpdateOverlays(new /image/fullbright, "fullbright")
+		T.AddOverlays(new /image/fullbright, "fullbright")
 		T.RL_Init()
 
 /proc/animate_open_from_floor(atom/A, time=1 SECOND, self_contained=1)
@@ -1847,7 +1853,7 @@ var/global/icon/scanline_icon = icon('icons/effects/scanning.dmi', "scanline")
 		if (issimulatedturf(T))
 			var/image/burn_overlay = image('icons/turf/floors.dmi',"floorscorched[rand(1,2)]")
 			burn_overlay.alpha = 200
-			T.UpdateOverlays(burn_overlay,"burn")
+			T.AddOverlays(burn_overlay,"burn")
 	SPAWN(beam_time)
 		qdel(beam)
 
@@ -1894,11 +1900,11 @@ proc/animate_orbit(atom/orbiter, center_x = 0, center_y = 0, radius = 32, time=8
 		easing = SINE_EASING | EASE_IN,
 		pixel_y = center_y)
 
-/proc/animate_juggle(atom/thing, time = 0.5 SECONDS)
+/proc/animate_juggle(atom/thing, time = 0.7 SECONDS)
 	animate(thing, time/3, pixel_x = -15, loop = -1)
 	animate(time = time, pixel_x = 15, loop = -1)
 	animate(thing, time = time/3, flags = ANIMATION_PARALLEL, loop = -1)
-	animate(time = time/2, pixel_y = 30, easing = CUBIC_EASING | EASE_OUT, loop = -1)
+	animate(time = time/2, pixel_y = 45, easing = CUBIC_EASING | EASE_OUT, loop = -1)
 	animate(time = time/2, pixel_y = 0, easing = CUBIC_EASING | EASE_IN, loop = -1)
 	animate_spin(thing, parallel = TRUE)
 

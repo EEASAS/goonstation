@@ -258,9 +258,9 @@
 				bothat = image('icons/obj/bots/aibots.dmi', "hat-[src.hat]")
 				UpdateOverlays(bothat, "secbot_hat")
 
-		MAKE_DEFAULT_RADIO_PACKET_COMPONENT("control", control_freq)
-		MAKE_DEFAULT_RADIO_PACKET_COMPONENT("beacon", beacon_freq)
-		MAKE_SENDER_RADIO_PACKET_COMPONENT("pda", FREQ_PDA)
+		MAKE_DEFAULT_RADIO_PACKET_COMPONENT(null, "control", control_freq)
+		MAKE_DEFAULT_RADIO_PACKET_COMPONENT(null, "beacon", beacon_freq)
+		MAKE_SENDER_RADIO_PACKET_COMPONENT(null, "pda", FREQ_PDA)
 
 		#ifdef I_AM_ABOVE_THE_LAW
 		START_TRACKING_CAT(TR_CAT_DELETE_ME)
@@ -960,7 +960,7 @@
 			var/perpname = perp.face_visible() ? perp.real_name : perp.name
 
 			for (var/datum/db_record/R as anything in data_core.security.find_records("name", perpname))
-				if(R["criminal"] == "*Arrest*")
+				if(R["criminal"] == ARREST_STATE_ARREST)
 					threatcount = 7
 					break
 

@@ -10,8 +10,8 @@
 #define MAX_FAILED_CLONE_TICKS 200 // vOv
 
 TYPEINFO(/obj/machinery/clonepod)
-	mats = list("MET-1"=35, "honey"=5)
-
+	mats = list("metal" = 35,
+				"honey" = 5)
 /obj/machinery/clonepod
 	anchored = ANCHORED
 	name = "cloning pod"
@@ -86,7 +86,7 @@ TYPEINFO(/obj/machinery/clonepod)
 
 		if (!src.net_id)
 			src.net_id = generate_net_id(src)
-		MAKE_SENDER_RADIO_PACKET_COMPONENT("pda", FREQ_PDA)
+		MAKE_SENDER_RADIO_PACKET_COMPONENT(src.net_id, "pda", FREQ_PDA)
 
 
 	disposing()

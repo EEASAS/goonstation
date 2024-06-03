@@ -80,7 +80,9 @@
 /turf/unsimulated/outdoors/concrete,
 /area/noGenerate)
 "q" = (
-/obj/decal/nav_danger,
+/obj/decal/nav_danger{
+	layer = 2.98
+	},
 /obj/barricade/barbed/wire{
 	dir = 8
 	},
@@ -107,7 +109,7 @@
 /turf/simulated/floor/concrete,
 /area/noGenerate)
 "w" = (
-/obj/storage/secure/closet/personal/empty,
+/obj/landmark/spawner/loot,
 /turf/simulated/floor/concrete,
 /area/noGenerate)
 "x" = (
@@ -139,8 +141,8 @@
 /turf/simulated/floor/concrete,
 /area/noGenerate)
 "D" = (
-/obj/machinery/door/unpowered/wood,
 /obj/machinery/drainage,
+/obj/machinery/door/unpowered/shuttle,
 /turf/simulated/floor/concrete,
 /area/noGenerate)
 "F" = (
@@ -240,7 +242,9 @@
 /turf/simulated/floor/concrete,
 /area/noGenerate)
 "X" = (
-/obj/decal/nav_danger,
+/obj/decal/nav_danger{
+	layer = 2.98
+	},
 /obj/storage/crate/trench_loot/drug,
 /turf/simulated/floor/concrete,
 /area/noGenerate)
