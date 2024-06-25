@@ -1,4 +1,20 @@
 
+(t)mon jun 24 24
+(u)LeahTheTech
+(+)RP security officers no longer have access to APCs.
+(u)NightmarechaMillian
+(p)19681
+(e)|
+(+)Mechscanned sawflies will no longer produce a remote on deployment.
+(+)The sawfly remote is separately mechscannable.
+(u)glowbold
+(p)19653
+(e)🪲💅💡|C-Bug, C-QoL, A-Station-Systems
+(*)Market refreshes and mail deliveries will now occur automatically.
+(u)Tyrant
+(p)19579
+(e)🪲🗺|C-Bug, A-Mapping
+(*)Fixed Oshan maintenance airlocks not having appropriate maintenance access requirements.
 (t)sun jun 23 24
 (u)tarmunora
 (+)Quartermasters are now forklift certified
